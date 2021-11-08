@@ -48,13 +48,14 @@ def train_from_folder(
         trunc_psi = trunc_psi,
         sparsity_penalty = sparsity_penalty,
     )
-
+    print('Loaded model', flush=True)
     if not new:
         model.load(load_from)
     else:
         model.clear()
-
+    print('Before data set src', flush=True)
     model.set_data_src(data, large_aug)
+    print('After data set src', flush=True)
 
     if generate:
         now = datetime.now()
@@ -63,10 +64,10 @@ def train_from_folder(
         model.evaluate(samples_name, num_image_tiles, rgb=True)
         print(f'sample images generated at {results_dir}/{name}/{samples_name}')
         return
-
-    for _ in tqdm(range(num_train_steps - model.steps), mininterval=10., desc=f'{name}<{data}>'):
+    
+    for i in tqdm(range(num_train_steps - model.steps), mininterval=10., desc=f'{name}<{data}>'):
         retry_call(model.train, tries=3, exceptions=NanException)
-        if _ % 50 == 0:
+        if i % 50 == 0:
             model.print_log()
 
 if __name__ == "__main__":
@@ -98,7 +99,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     print(args)
-
+    print('Calling train_from_folder')
     train_from_folder(args.data, args.results_dir, args.models_dir, args.name, args.new, args.large_aug, args.load_from, args.n_part, 
         args.image_size, args.network_capacity, args.batch_size, args.gradient_accumulate_every, args.num_train_steps, args.learning_rate_D, 
         args.learning_rate_G, args.num_workers, args.save_every, args.generate, args.num_image_tiles, args.trunc_psi, args.sparsity_penalty)

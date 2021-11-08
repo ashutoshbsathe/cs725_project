@@ -148,6 +148,7 @@ class Dataset_JSON(data.Dataset):
         self.large_aug = large_aug
         self.paths = [p for p in Path(f'{folder}').glob(f'**/*.json')]
         while len(self.paths) < min_sample_num:
+            print(len(self.paths), min_sample_num)
             self.paths.extend(self.paths)
         # notice the real influence of the trans / scale is side / 512 (original side) because of scalling in rendering
         if not large_aug:
@@ -165,6 +166,7 @@ class Dataset_JSON(data.Dataset):
             self.id_to_part = { 0:'initial',  1:'eye',  2:'arms',  3:'beak',  4:'mouth',  5:'body',  6:'ears',  7:'feet',  8:'fin', 
                          9:'hair',  10:'hands',  11:'head',  12:'horns',  13:'legs',  14:'nose',  15:'paws',  16:'tail', 17:'wings'}
         self.n_part = len(self.id_to_part)
+        print('Returning')
 
     def __len__(self):
         return len(self.paths)

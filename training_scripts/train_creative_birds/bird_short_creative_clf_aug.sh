@@ -13,4 +13,4 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=10
 
-python ../../run_part_selector.py --new --results_dir ../../../results  --models_dir ../../../models --n_part 10 --data ../../../data/bird_short_ --name short_bird_creative_selector --batch_size 128 --save_every 1000 --image_size 64
+python ../../run_part_selector.py --new --results_dir ../../../results  --models_dir ../../../models --n_part 10 --data ../../../data/bird_short_ --name short_bird_creative_selector --batch_size 256 --save_every 1000 --image_size 32
