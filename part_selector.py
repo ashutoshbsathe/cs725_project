@@ -12,6 +12,8 @@ from shutil import rmtree
 from functools import partial
 import multiprocessing
 
+from tqdm import tqdm 
+
 import numpy as np
 import torch
 from torch import nn
@@ -75,7 +77,7 @@ class Dataset_JSON(data.Dataset):
                             'hair', 'hands', 'head', 'horns', 'legs', 'nose', 'paws', 'tail', 'wings', 'none']
             self.id_to_part = { 0:'initial',  1:'eye',  2:'arms',  3:'beak',  4:'mouth',  5:'body',  6:'ears',  7:'feet',  8:'fin', 
                              9:'hair',  10:'hands',  11:'head',  12:'horns',  13:'legs',  14:'nose',  15:'paws',  16:'tail', 17:'wings'}
-        folder = base_path+'%s_json_'+'%d_train'%image_size
+        folder = base_path+'%s_json_64'#+'%d_train'%image_size
         self.paths = []
         self.paths_test = []
         # split the training data based on thte aids of the eye sketches
@@ -84,14 +86,17 @@ class Dataset_JSON(data.Dataset):
                 self.paths_test.append(p)
             else:
                 self.paths.append(p)
+        print(f'Total Paths = {len(self.paths)}, Total Test Paths = {(len(self.paths_test))}')
         for part in self.target_parts[1:]:
-            for i, p in enumerate(Path(f'{folder%part}').glob(f'**/*.json')):
+            print(f'{folder%part}')
+            for i, p in enumerate(tqdm(Path(f'{folder%part}').glob(f'**/*.json'))):
                 if Path(str(p).replace('_'+part, '_'+self.target_parts[0])) in self.paths_test:
                     self.paths_test.append(p)
                 else:
                     self.paths.append(p)
-        self.parts_id = [self.target_parts.index(str(path).split('_')[-5]) for path in self.paths]
-        self.parts_id_test = [self.target_parts.index(str(path).split('_')[-5]) for path in self.paths_test]
+        print('Path processing done')
+        self.parts_id = [self.target_parts.index(str(path).split('_')[-4]) for path in self.paths]
+        self.parts_id_test = [self.target_parts.index(str(path).split('_')[-4]) for path in self.paths_test]
         self.rotate = [-1/12*np.pi, 1/12*np.pi]
         self.trans = 0.01
         self.scale = [0.9, 1.1]

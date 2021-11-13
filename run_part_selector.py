@@ -47,7 +47,7 @@ def train_from_folder(
         model.clear()
 
     model.set_data_src(data, name)
-
+    print('Jumping into training now')
     for _ in tqdm(range(num_train_steps - model.steps), mininterval=10., desc=f'{name}<{data}>'):
         retry_call(model.train, tries=3, exceptions=NanException)
         if _ % 50 == 0:
