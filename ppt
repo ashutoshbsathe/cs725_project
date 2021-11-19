@@ -1,0 +1,5 @@
+[] GAN, in general (why GAN works - why doesn't disc become best?, issues - losses, evaluation, . . )
+[] Analysis on the results of Doodler GAN (PCA, generated birds, patterns of part selection, . . )
+[] Ashutosh's one shot model.
+[] Stability in training StyleGAN
+[] Negative results on StyleGAN
