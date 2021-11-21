@@ -42,24 +42,28 @@ for psi in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
             last_i += 1
     step_part_distribution /= np.tile(step_part_distribution.sum(axis=1), (len(curr_parts_list), 1)).T
     probs /= np.tile(probs.sum(axis=1), (len(curr_parts_list), 1)).T
-    print(num_parts_used)
-    print(probs)
-    print(step_part_distribution)
     plt.clf()
     plt.matshow(probs, cmap=truncated_colormap('GnBu', 0.0, 0.5))
     for i in range(len(probs)):
         for j in range(len(probs[0])):
             plt.text(j, i, f'{probs[i, j]:.2f}', ha='center', va='center')
-    plt.xticks(range(len(curr_parts_list)), labels=curr_parts_list, rotation='vertical')
+    plt.xticks(range(len(curr_parts_list)), labels=curr_parts_list, rotation=45)
     plt.yticks(range(len(curr_parts_list)), labels=curr_parts_list)
+    plt.xlabel('Next part')
+    plt.ylabel('Current part')
+    plt.gca().xaxis.set_ticks_position('bottom')
+    plt.title(r'$\Pr(Next\;part|Current\;part)$')
     plt.savefig(f'probs_{psi}.pdf', bbox_inches='tight', dpi=300)
     plt.clf()
     plt.matshow(step_part_distribution.T, cmap='Wistia')
     for i in range(len(step_part_distribution.T)):
         for j in range(len(step_part_distribution.T[0])):
             plt.text(j, i, f'{step_part_distribution.T[i, j]:.2f}', ha='center', va='center')
-    plt.xticks(range(max_steps), labels=[f'Step {i+1}' for i in range(max_steps)], rotation='vertical')
+    plt.xticks(range(max_steps), labels=[f'Step {i+1}' for i in range(max_steps)], rotation=45)
     plt.yticks(range(len(curr_parts_list)), labels=curr_parts_list)
+    plt.title('\n'.join([f'{int(x)} sketches use {i} parts' for (i, x) in filter(lambda x: x[1] > 0, list(enumerate(num_parts_used)))]))
+    plt.gca().xaxis.set_ticks_position('bottom')
     plt.savefig(f'stepwise_part_distribution_{psi}.pdf', bbox_inches='tight', dpi=300)
+    print(num_parts_used)
     print(64*'-')
 
