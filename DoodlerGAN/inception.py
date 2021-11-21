@@ -227,7 +227,7 @@ def sketch_inception_v3():
                               aux_logits=True,
                               pretrained=False)
     inception.Conv2d_1a_3x3.conv = nn.Conv2d(1, 32, kernel_size=(3,3), stride=(2,2), bias=False)
-    state_dict = torch.load('../models/inception/85.pt')
+    state_dict = torch.load('../../trained_models/inception.pt')
 
     state_dict_new = {key[7:]:state_dict[key] for key in state_dict}
     inception.load_state_dict(state_dict_new)

@@ -77,7 +77,7 @@ parser.add_argument('--name', default='birds', type=str,
                     help='which dataset to be evluated', choices=['birds', 'creatures'])
 
 
-with open('../data/id_to_class.json', 'r') as fp:
+with open('../../data/id_to_class.json', 'r') as fp:
     ID2CLASS = json.load(fp)
     ID2CLASS ={int(k): v for k, v in ID2CLASS.items()}
 
