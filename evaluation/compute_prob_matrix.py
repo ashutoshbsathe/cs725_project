@@ -1,11 +1,22 @@
 import glob 
 import numpy as np 
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors 
 src_path = '../../results_32/bird_{psi}/DoodlerGAN_all/part_gen/'
 partlist = 'generated*.txt'
 allparts = 'all_parts.txt'
 
 max_steps = 8
+
+def truncated_colormap(cmap_name, minval=0.0, maxval=0.0, n=100):
+    # https://stackoverflow.com/a/18926541
+    cmap = plt.get_cmap(cmap_name)
+    return colors.LinearSegmentedColormap.from_list(
+        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n))
+    )
+    
+    
 
 for psi in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
     with open(src_path.format(psi=psi) + allparts, 'r') as f:
@@ -35,7 +46,7 @@ for psi in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
     print(probs)
     print(step_part_distribution)
     plt.clf()
-    plt.matshow(probs, cmap='Pastel2')
+    plt.matshow(probs, cmap=truncated_colormap('GnBu', 0.0, 0.5))
     for i in range(len(probs)):
         for j in range(len(probs[0])):
             plt.text(j, i, f'{probs[i, j]:.2f}', ha='center', va='center')
