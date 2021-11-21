@@ -32,6 +32,7 @@ class Initialstroke_Dataset(data.Dataset):
         self.image_size = image_size
         self.paths = [p for p in Path(f'{folder}').glob(f'**/*.png')]
         self.transform = transforms.Compose([
+            transforms.Resize(image_size),
             transforms.ToTensor(),
         ])
 
@@ -177,57 +178,66 @@ def train_from_folder(
     trunc_psi = 0.75,
     generate_all=False,
 ):
-    min_step = 299
-    name_eye='short_bird_creative_sequential_r6_partstack_aug_eye_unet2_largeaug'
+    #min_step = 299
+    #name_eye='short_bird_creative_sequential_r6_partstack_aug_eye_unet2_largeaug'
+    min_step = 299 
+    name_eye = 'short_bird_creative_eye'
     load_from = load_latest(models_dir, name_eye)
     load_from = min(min_step, load_from)
     model_eye = Trainer_cond_unet(name_eye, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_eye.load_config()
     model_eye.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_eye, load_from)))
 
-    name_head='short_bird_creative_sequential_r6_partstack_aug_head_unet2'
+    #name_head='short_bird_creative_sequential_r6_partstack_aug_head_unet2'
+    name_head = 'short_bird_creative_head'
     load_from = load_latest(models_dir, name_head)
     load_from = min(min_step, load_from)
     model_head = Trainer_cond_unet(name_head, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_head.load_config()
     model_head.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_head, load_from)))
     
-    name_body='short_bird_creative_sequential_r6_partstack_aug_body_unet2'
+    #name_body='short_bird_creative_sequential_r6_partstack_aug_body_unet2'
+    name_body = 'short_bird_creative_body'
     load_from = load_latest(models_dir, name_body)
     load_from = min(min_step, load_from)
     model_body = Trainer_cond_unet(name_body, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_body.load_config()
     model_body.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_body, load_from)))
     
-    name_beak='short_bird_creative_sequential_r6_partstack_aug_beak_unet2'
+    #name_beak='short_bird_creative_sequential_r6_partstack_aug_beak_unet2'
+    name_beak = 'short_bird_creative_beak'
     load_from = load_latest(models_dir, name_beak)
     load_from = min(min_step, load_from)
     model_beak = Trainer_cond_unet(name_beak, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_beak.load_config()
     model_beak.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_beak, load_from)))
     
-    name_legs='short_bird_creative_sequential_r6_partstack_aug_legs_unet2'
+    #name_legs='short_bird_creative_sequential_r6_partstack_aug_legs_unet2'
+    name_legs = 'short_bird_creative_legs'
     load_from = load_latest(models_dir, name_legs)
     load_from = min(min_step, load_from)
     model_legs = Trainer_cond_unet(name_legs, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_legs.load_config()
     model_legs.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_legs, load_from)))
     
-    name_wings='short_bird_creative_sequential_r6_partstack_aug_wings_unet2'
+    #name_wings='short_bird_creative_sequential_r6_partstack_aug_wings_unet2'
+    name_wings = 'short_bird_creative_wings'
     load_from = load_latest(models_dir, name_wings)
     load_from = min(min_step, load_from)
     model_wings = Trainer_cond_unet(name_wings, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_wings.load_config()
     model_wings.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_wings, load_from)))
     
-    name_mouth='short_bird_creative_sequential_r6_partstack_aug_mouth_unet2'
+    #name_mouth='short_bird_creative_sequential_r6_partstack_aug_mouth_unet2'
+    name_mouth = 'short_bird_creative_mouth'
     load_from = load_latest(models_dir, name_mouth)
     load_from = min(min_step, load_from)
     model_mouth = Trainer_cond_unet(name_mouth, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
     model_mouth.load_config()
     model_mouth.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_mouth, load_from)))
     
-    name_tail='short_bird_creative_sequential_r6_partstack_aug_tail_unet2'
+    #name_tail='short_bird_creative_sequential_r6_partstack_aug_tail_unet2'
+    name_tail = 'short_bird_creative_tail'
     load_from = load_latest(models_dir, name_tail)
     load_from = min(min_step, load_from)
     model_tail = Trainer_cond_unet(name_tail, results_dir,  models_dir, n_part=n_part, batch_size=batch_size, image_size=image_size, network_capacity=network_capacity)
@@ -235,7 +245,8 @@ def train_from_folder(
     model_tail.GAN.load_state_dict(torch.load('%s/%s/model_%d.pt'%(models_dir, name_tail, load_from)))
     
 
-    name_selector='short_bird_creative_selector_aug'
+    #name_selector='short_bird_creative_selector_aug'
+    name_selector = 'short_bird_creative_selector'
     load_from = load_latest(models_dir, name_selector)
     part_selector = Trainer_selector(name_selector, results_dir, models_dir, n_part=n_part, batch_size = batch_size, image_size = image_size, network_capacity = network_capacity)
     part_selector.load_config()
@@ -243,7 +254,7 @@ def train_from_folder(
 
     if not os.path.exists(results_dir):
         os.mkdir(results_dir)
-    inital_dir = '%s/bird_short_test_init_strokes_%d'%(data_path, image_size)
+    inital_dir = '%s/bird_short_test_init_strokes_64'%(data_path)
     dataset = Initialstroke_Dataset(inital_dir, image_size=image_size)
     dataloader = data.DataLoader(dataset, num_workers=5, batch_size=batch_size, drop_last=False, shuffle=False, pin_memory=True)
     # import ipdb;ipdb.set_trace()
@@ -259,6 +270,10 @@ def train_from_folder(
             os.mkdir(os.path.join(generation_dir, 'bw'))
             os.mkdir(os.path.join(generation_dir, 'color_initial'))
             os.mkdir(os.path.join(generation_dir, 'color'))
+            os.mkdir(os.path.join(generation_dir, 'part_gen'))
+            with open(os.path.join(generation_dir, 'part_gen/all_parts.txt'), 'w') as f:
+                f.write('\n'.join(target_parts)+'\n')
+        print(len(dataloader))
         for count, initial_strokes in enumerate(dataloader):
             initial_strokes = initial_strokes.cuda()
             start_point = len(os.listdir(os.path.join(generation_dir, 'bw')))
@@ -300,6 +315,12 @@ def train_from_folder(
                 cv2.imwrite(os.path.join(generation_dir, 'bw', f'{str(samples_name)}.png'), (1-stack_parts[0, -1].cpu().data.numpy())*255.)
                 cv2.imwrite(os.path.join(generation_dir, 'color_initial', f'{str(samples_name)}-color.png'), cv2.cvtColor(initial_colored_full.transpose(1, 2, 0)*255., cv2.COLOR_RGB2BGR))
                 cv2.imwrite(os.path.join(generation_dir, 'color', f'{str(samples_name)}-color.png'), cv2.cvtColor(partial_rgbs[0].cpu().data.numpy().transpose(1, 2, 0)*255., cv2.COLOR_RGB2BGR))
+                with open(os.path.join(generation_dir, 'part_gen', f'{str(samples_name)}-partsorder.txt'), 'w') as f:
+                    f.write('\n'.join(prev_part)+'\n')
+                print(f'{start_point+i} sketches generated')
+                if start_point + i >= 6400:
+                    # We generate only 6400 for the other type of model as well
+                    return
     else:
         now = datetime.now()
         timestamp = now.strftime("%m-%d-%Y_%H-%M-%S")
@@ -338,6 +359,7 @@ def train_from_folder(
                 part_rgbs[i] = part_rgb[0]
             torchvision.utils.save_image(partial_rgbs, os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-round{iter_i}.png'), nrow=num_image_tiles)
             torchvision.utils.save_image(part_rgbs, os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-part-round{iter_i}.png'), nrow=num_image_tiles)
+        print(prev_parts)
         torchvision.utils.save_image(1-stack_parts[:, -1:], os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-final_pred.png'), nrow=num_image_tiles)
 
 if __name__ == "__main__":
@@ -348,7 +370,7 @@ if __name__ == "__main__":
     parser.add_argument('--n_part', type=int, default=10)
     parser.add_argument('--image_size', type=int, default=64)
     parser.add_argument('--network_capacity', type=int, default=16)
-    parser.add_argument('--batch_size', type=int, default=100)
+    parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_image_tiles', type=int, default=8)
     parser.add_argument('--trunc_psi', type=float, default=1.)
     parser.add_argument('--generate_all', action='store_true')
