@@ -19,6 +19,7 @@ from torchvision import transforms
 from part_selector import Trainer as Trainer_selector
 from part_generator import Trainer as Trainer_cond_unet
 from scipy.ndimage.morphology import distance_transform_edt
+import matplotlib.pyplot as plt 
 
 COLORS = {'initial':1-torch.cuda.FloatTensor([45, 169, 145]).view(1, -1, 1, 1)/255., 'eye':1-torch.cuda.FloatTensor([243, 156, 18]).view(1, -1, 1, 1)/255., 'none':1-torch.cuda.FloatTensor([149, 165, 166]).view(1, -1, 1, 1)/255., 
         'beak':1-torch.cuda.FloatTensor([211, 84, 0]).view(1, -1, 1, 1)/255., 'body':1-torch.cuda.FloatTensor([41, 128, 185]).view(1, -1, 1, 1)/255., 'details':1-torch.cuda.FloatTensor([171, 190, 191]).view(1, -1, 1, 1)/255.,
@@ -333,6 +334,8 @@ def train_from_folder(
         partial_rgbs_variation = initial_strokes_rgb.clone()
         prev_parts = [[] for _ in range(num_image_tiles**2)]
         samples_name = f'generated-{timestamp}-{min_step}'
+        roundwise_partial_filenames = []
+        roundwise_part_filenames = []
         for iter_i in range(max_iter):
             outputs = part_selector.clf.D(stack_parts)
             part_rgbs = torch.ones(num_image_tiles*num_image_tiles, 3, image_size, image_size).cuda()
@@ -358,10 +361,35 @@ def train_from_folder(
                 partial_rgbs[i] = partial_rgb[0]
                 part_rgbs[i] = part_rgb[0]
             torchvision.utils.save_image(partial_rgbs, os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-round{iter_i}.png'), nrow=num_image_tiles)
+            roundwise_partial_filenames.append(os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-round{iter_i}.png'))
             torchvision.utils.save_image(part_rgbs, os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-part-round{iter_i}.png'), nrow=num_image_tiles)
+            roundwise_part_filenames.append(os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-part-round{iter_i}.png'))
         for list_prev in prev_parts:
             print('[\n\t' + '\n\t'.join(list_prev) + '\n]')
         torchvision.utils.save_image(1-stack_parts[:, -1:], os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-final_pred.png'), nrow=num_image_tiles)
+        plt.clf()
+        scale = 2
+        fig, ax = plt.subplots(figsize=(max_iter*scale//2+1, scale*2+1), ncols=max_iter//2, nrows=2)
+        for i in range(max_iter):
+            row = 0 if i < max_iter // 2 else 1
+            col = i - (max_iter // 2 if row else 0)
+            ax[row, col].imshow(Image.open(roundwise_partial_filenames[i]), interpolation='none')
+            ax[row, col].axis('off')
+            ax[row, col].set_title(f'Step {i+1}')
+        fig.suptitle('Evolution of partial sketches with each iteration')
+        plt.savefig(os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-sequence.pdf'), bbox_inches='tight')
+        plt.clf()
+        scale = 2
+        fig, ax = plt.subplots(figsize=(max_iter*scale//2+1, scale*2+1), ncols=max_iter//2, nrows=2)
+        for i in range(max_iter):
+            row = 0 if i < max_iter // 2 else 1
+            col = i - (max_iter // 2 if row else 0)
+            ax[row, col].imshow(Image.open(roundwise_part_filenames[i]), interpolation='none')
+            ax[row, col].axis('off')
+            ax[row, col].set_title(f'Step {i+1}')
+        fig.suptitle('Part generated at each iteration')
+        plt.savefig(os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-parts.pdf'), bbox_inches='tight')
+        
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
