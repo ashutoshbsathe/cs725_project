@@ -359,7 +359,8 @@ def train_from_folder(
                 part_rgbs[i] = part_rgb[0]
             torchvision.utils.save_image(partial_rgbs, os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-round{iter_i}.png'), nrow=num_image_tiles)
             torchvision.utils.save_image(part_rgbs, os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-part-round{iter_i}.png'), nrow=num_image_tiles)
-        print(prev_parts)
+        for list_prev in prev_parts:
+            print('[\n\t' + '\n\t'.join(list_prev) + '\n]')
         torchvision.utils.save_image(1-stack_parts[:, -1:], os.path.join(results_dir, f'{str(samples_name)}-{str(min_step)}-final_pred.png'), nrow=num_image_tiles)
 
 if __name__ == "__main__":
@@ -376,7 +377,7 @@ if __name__ == "__main__":
     parser.add_argument('--generate_all', action='store_true')
 
     args = parser.parse_args()
-    print(args)
+    #print(args)
 
     train_from_folder(args.data_dir, args.results_dir, args.models_dir, args.n_part, args.image_size, args.network_capacity, 
         args.batch_size, args.num_image_tiles, args.trunc_psi, args.generate_all)
