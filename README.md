@@ -7,3 +7,5 @@ This repository contains the code dumps used for our CS725 project titled "*Expl
 The evaluation results (on metrics like FID, GD) can be found in evaluation/*_fids.log and StyleGAN/gd_scores.log
 
 The demo video can be found under the demo folder. It is a 1 minute video which shows the quality of the generated images and the generation of a doodle using the DoodlerGAN models step by step.
+
+The details of the implementation of StyleGAN that we followed can be found under style_gan_learning.md, along with a brief discussion of what happened in training.
