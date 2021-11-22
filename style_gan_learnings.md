@@ -1,3 +1,6 @@
+# Motivation 
+1. We want to see if we can generate even higher resolution sketches using ProgressiveGAN like training
+
 # Tricks and Tips on Training
 
 Model was trained in a progressive GAN fashion with size starting from 4 x 4 image, up to 32 x 32 images
